@@ -39,4 +39,4 @@ VALIDATE $? "Started mongod"
 sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mongod.conf
 
 systemctl restart mongod  &>>$LOGS_FILE
-VALIDATE $? "Restarted mongod
+VALIDATE $? "Restarted mongod"
