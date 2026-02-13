@@ -1,6 +1,7 @@
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-script/"
 LOGS_FILE="$LOGS_FOLDER/$0.log"
+SCRIPT_DIR=$PWD
 
 R="\e[31m"
 G="\e[32m"
@@ -23,7 +24,7 @@ else
 fi
 }
 
-cp mongo.repo /etc/yum.repos.d/mongo.repo
+cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 VALIDATE $? "Copying Mongo Repo" 
 
 dnf install mongodb-org -y &>>$LOGS_FILE
