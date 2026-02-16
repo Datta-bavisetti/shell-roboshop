@@ -34,40 +34,40 @@ VALIDATE $? "Enabling NodeJS 20"
 dnf install nodejs -y &>>$LOGS_FILE
 VALIDATE $? "Installing NodeJS"
 
-id roboshop
+id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOGS_FILE
     VALIDATE $? "Creating system user"
 else 
     echo -e "Roboshop already exists....$Y SKIPPING $N"
 fi
 
-mkdir -p /app 
+mkdir -p /app &>>$LOGS_FILE
 VALIDATE $? "Creating the app directory"
 
-curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
+curl -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip &>>$LOGS_FILE
 VALIDATE $? "Downloading the app content"
 
-cd /app 
+cd /app &>>$LOGS_FILE
 VALIDATE $? "Chaging the directory to the app"
 
-rm -rf /app/*
+rm -rf /app/* &>>$LOGS_FILE
 VALIDATE $? "Removing existing code"
 
-unzip /tmp/user.zip
+unzip /tmp/user.zip &>>$LOGS_FILE
 VALIDATE $? "Unzipping the content"
 
-npm install 
+npm install &>>$LOGS_FILE
 VALIDATE $? "Installing npm"
 
-cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILE
 VALIDATE $? "Copying the user service file"
 
-systemctl daemon-reload
+systemctl daemon-reload &>>$LOGS_FILE
 VALIDATE $? "daemon reload"
 
-systemctl enable user 
+systemctl enable user &>>$LOGS_FILE
 VALIDATE $? "Enabling user service"
 
-systemctl start user
+systemctl start user &>>$LOGS_FILE
 VALIDATE $? "Starting user service"
