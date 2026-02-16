@@ -35,12 +35,6 @@ VALIDATE $? "Enabled nginx:.24"
 dnf install nginx -y &>>$LOGS_FILE
 VALIDATE $? "Installing nginx"
 
-systemctl enable nginx 
-VALIDATE $? "Enabled nginx"
-
-systemctl start nginx 
-VALIDATE $? "Started nginx"
-
 rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
 VALIDATE $? "Removing default content"
 
@@ -55,6 +49,8 @@ VALIDATE $? "Downloaded and unzipped frontend"
 cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
 VALIDATE $? "Copied our nginx conf file"
 
-systemctl restart nginx
-VALIDATE $? "Restarted nginx"
+systemctl enable nginx 
+VALIDATE $? "Enabled nginx"
 
+systemctl start nginx 
+VALIDATE $? "Started nginx"
