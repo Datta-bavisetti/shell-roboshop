@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-script/"
@@ -26,19 +26,14 @@ else
 fi
 }
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-VALIDATE $? "Copying Mongo Repo" 
+dnf install mysql-server -y &>>$LOGS_FILE
+VALIDATE $? "Installing MySQL"
 
-dnf install mongodb-org -y &>>$LOGS_FILE
-VALIDATE $? "Installing MongoDB" 
+systemctl enable mysqld
+VALIDATE $? "Enable mysqld"
 
-systemctl enable mongod 
-VALIDATE $? "Enabled mongod"
+systemctl start mysqld  
+VALIDATE $? "Start mysqld"
 
-systemctl start mongod
-VALIDATE $? "Started mongod"
-
-sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mongod.conf
-
-systemctl restart mongod
-VALIDATE $? "Restarted mongod"
+mysql_secure_installation --set-root-pass RoboShop@1 &>>$LOGS_FILE
+VALIDATE $? "Set root password"

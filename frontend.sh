@@ -1,3 +1,5 @@
+#!/bin/bash
+
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-script/"
 LOGS_FILE="$LOGS_FOLDER/$0.log"
@@ -24,13 +26,13 @@ else
 fi
 }
 
-dnf module disable nginx -y
+dnf module disable nginx -y &>>$LOGS_FILE
 VALIDATE $? "Disabled nginx"
 
-dnf module enable nginx:1.24 -y
+dnf module enable nginx:1.24 -y &>>$LOGS_FILE
 VALIDATE $? "Enabled nginx:.24"
 
-dnf install nginx -y
+dnf install nginx -y &>>$LOGS_FILE
 VALIDATE $? "Installing nginx"
 
 systemctl enable nginx 
@@ -39,17 +41,18 @@ VALIDATE $? "Enabled nginx"
 systemctl start nginx 
 VALIDATE $? "Started nginx"
 
-rm -rf /usr/share/nginx/html/* 
+rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
 VALIDATE $? "Removing default content"
 
-curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip  &>>$LOGS_FILE
 
-cd /usr/share/nginx/html 
+cd /usr/share/nginx/html &>>$LOGS_FILE
+VALIDATE "Chaging the directory to the app"
 
-unzip /tmp/frontend.zip
+unzip /tmp/frontend.zip &>>$LOGS_FILE
 VALIDATE $? "Downloaded and unzipped frontend"
 
-cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
 VALIDATE $? "Copied our nginx conf file"
 
 systemctl restart nginx

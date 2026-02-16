@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 USERID=$(id -u)
 LOGS_FOLDER="/var/log/shell-script/"
@@ -26,19 +26,17 @@ else
 fi
 }
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongo.repo &>>$LOGS_FILE
-VALIDATE $? "Copying Mongo Repo" 
+dnf module disable redis -y &>>$LOGS_FILE
+VALIDATE $? "Disabling Redis default version"
 
-dnf install mongodb-org -y &>>$LOGS_FILE
-VALIDATE $? "Installing MongoDB" 
+dnf module enable redis:7 -y &>>$LOGS_FILE
+VALIDATE $? "Enabling Redis 7"
 
-systemctl enable mongod 
-VALIDATE $? "Enabled mongod"
+dnf install redis -y &>>$LOGS_FILE
+VALIDATE $? "Installing Redis"
 
-systemctl start mongod
-VALIDATE $? "Started mongod"
+systemctl enable redis
+VALIDATE $? "Enable redis service"
 
-sed -i "s/127.0.0.1/0.0.0.0/g" /etc/mongod.conf
-
-systemctl restart mongod
-VALIDATE $? "Restarted mongod"
+systemctl start redis 
+VALIDATE $? "Staring the redis service"
