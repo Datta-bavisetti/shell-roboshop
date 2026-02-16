@@ -19,11 +19,11 @@ if [ $USERID -ne 0 ]; then
 fi
 
 VALIDATE(){
-if [ $1 -ne 0 ]; then
-    echo "$2...FAILURE" | tee -a $LOGS_FILE
-else
-    echo "$2...SUCCESS" | tee -a $LOGS_FILE
-fi
+    if [ $1 -ne 0 ]; then
+        echo "$2...FAILURE" | tee -a $LOGS_FILE
+    else
+        echo "$2...SUCCESS" | tee -a $LOGS_FILE
+    fi
 }
 
 dnf module disable nginx -y &>>$LOGS_FILE
