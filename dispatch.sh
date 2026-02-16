@@ -41,7 +41,7 @@ fi
 mkdir -p /app &>>$LOGS_FILE
 VALIDATE $? "Creating the app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/payment-v3.zip &>>$LOGS_FILE
+curl -o /tmp/dispatch.zip https://roboshop-artifacts.s3.amazonaws.com/dispatch-v3.zip &>>$LOGS_FILE
 VALIDATE $? "Downloading the app content"
 
 cd /app &>>$LOGS_FILE
@@ -50,7 +50,19 @@ VALIDATE $? "Chaging the directory to the app"
 rm -rf /app/* &>>$LOGS_FILE
 VALIDATE $? "Removing existing code"
 
-unzip /tmp/payment.zip &>>$LOGS_FILE
+unzip /tmp/dispatch.zip &>>$LOGS_FILE
 VALIDATE $? "Unzipping the content"
 
 cd /app  &>>$LOGS_FILE
+VALIDATE $? "Chaging the directory to the app"
+
+go mod init dispatch
+go get 
+go build
+
+systemctl daemon-reload &>>$LOGS_FILE
+VALIDATE $? "daemon reload"
+
+systemctl enable dispatch &>>$LOGS_FILE
+systemctl start dispatch
+VALIDATE $? "Enabled & Started dispatch service"
