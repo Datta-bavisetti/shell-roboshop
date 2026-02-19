@@ -44,6 +44,9 @@ VALIDATE $? "Creating the app directory"
 curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOGS_FILE
 VALIDATE $? "Downloading the app content"
 
+unzip /tmp/shipping.zip &>>$LOGS_FILE
+VALIDATE $? "Uzip shipping code"
+
 cd /app &>>$LOGS_FILE
 VALIDATE $? "Chaging the directory to the app"
 
