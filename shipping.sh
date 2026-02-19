@@ -48,21 +48,17 @@ cd /app &>>$LOGS_FILE
 VALIDATE $? "Chaging the directory to the app"
 
 mvn clean package &>>$LOGS_FILE
-mv target/shipping-1.0.jar shipping.jar &>>$LOGS_FILE
-VALIDATE $? "Jar file is created"
+VALIDATE $? "Installing and Building shipping"
 
-systemctl daemon-reload
-VALIDATE $? "daemon reload"
-
-systemctl enable shipping 
-VALIDATE $? "Enabling shipping service"
-
-systemctl start shipping
-VALIDATE $? "Starting shipping service"
+mv target/shipping-1.0.jar shipping.jar 
+VALIDATE $? "Moving and Renaming shipping"
 
 
 cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 VALIDATE $? "Created systemctl service"
+
+systemctl daemon-reload
+VALIDATE $? "daemon reload"
 
 dnf install mysql -y &>>$LOGS_FILE
 VALIDATE $? "Installing MySQL" 
