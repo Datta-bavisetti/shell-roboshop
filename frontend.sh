@@ -27,30 +27,26 @@ VALIDATE(){
 }
 
 dnf module disable nginx -y &>>$LOGS_FILE
-VALIDATE $? "Disabled nginx"
-
 dnf module enable nginx:1.24 -y &>>$LOGS_FILE
-VALIDATE $? "Enabled nginx:.24"
-
 dnf install nginx -y &>>$LOGS_FILE
-VALIDATE $? "Installing nginx"
+VALIDATE $? "Installing Nginx"
 
-rm -rf /usr/share/nginx/html/* &>>$LOGS_FILE
-VALIDATE $? "Removing default content"
+systemctl enable nginx  &>>$LOGS_FILE
+systemctl start nginx 
+VALIDATE $? "Enabled and started nginx"
 
-curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip  &>>$LOGS_FILE
+rm -rf /usr/share/nginx/html/* 
+VALIDATE $? "Remove default content"
 
-cd /usr/share/nginx/html &>>$LOGS_FILE
-VALIDATE "Chaging the directory to the app"
-
+curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip &>>$LOGS_FILE
+cd /usr/share/nginx/html 
 unzip /tmp/frontend.zip &>>$LOGS_FILE
 VALIDATE $? "Downloaded and unzipped frontend"
 
-cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf &>>$LOGS_FILE
+rm -rf /etc/nginx/nginx.conf
+
+cp $SCRIPT_DIR/nginx.conf /etc/nginx/nginx.conf
 VALIDATE $? "Copied our nginx conf file"
 
-systemctl enable nginx 
-VALIDATE $? "Enabled nginx"
-
-systemctl start nginx 
-VALIDATE $? "Started nginx"
+systemctl restart nginx
+VALIDATE $? "Restarted Nginx"
